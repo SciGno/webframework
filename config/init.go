@@ -6,7 +6,6 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/scigno/webframework/db"
 	"github.com/scigno/webframework/logger"
 	"github.com/scigno/webframework/relations"
 	"github.com/scigno/webframework/router"
@@ -38,8 +37,8 @@ func Init() {
 	logger.Info("MD5: %x", h.Sum(nil))
 	logger.Info("UUID4: " + u)
 
-	db.SetResource(db.Cassandra)
-	db.CassandraConnect("username", "username", "username")
+	// db.SetResource(db.Cassandra)
+	// db.CassandraConnect("username", "username", "username")
 
 	s := session.NewSession()
 	s.SetTimeout(5.0)
