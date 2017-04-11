@@ -5,7 +5,7 @@ package relations
 import (
 	"net/http"
 
-	"bitbucket.com/scigno/webframework/templates"
+	"github.com/scigno/webframework/templates"
 )
 
 type api struct {

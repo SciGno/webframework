@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"bitbucket.com/scigno/webframework/logger"
+	"github.com/scigno/webframework/logger"
 
 	"github.com/gocql/gocql"
 )
@@ -23,8 +23,8 @@ func CassandraConnect(ip string, u string, p string) (DAL, error) {
 	//
 	// }
 	cluster.SslOpts = &gocql.SslOptions{
-		CertPath: "/Users/c10002a/Development/GoCode/src/bitbucket.com/scigno/webframework/certs/rootCa.crt",
-		KeyPath:  "/Users/c10002a/Development/GoCode/src/bitbucket.com/scigno/webframework/certs/rootCa.key",
+		CertPath: "/Users/c10002a/Development/GoCode/src/github.com/scigno/webframework/certs/rootCa.crt",
+		KeyPath:  "/Users/c10002a/Development/GoCode/src/github.com/scigno/webframework/certs/rootCa.key",
 	}
 	cluster.Keyspace = "hiera"
 	session, err := cluster.CreateSession()

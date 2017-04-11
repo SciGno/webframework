@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"bitbucket.com/scigno/webframework/uuid4"
+	"github.com/scigno/webframework/uuid4"
 )
 
 var (

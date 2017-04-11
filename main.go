@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"bitbucket.com/scigno/webframework/config"
+	"github.com/scigno/webframework/config"
 )
 
 // This is the main function

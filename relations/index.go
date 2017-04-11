@@ -5,8 +5,8 @@ package relations
 import (
 	"net/http"
 
-	"bitbucket.com/scigno/webframework/auth"
-	"bitbucket.com/scigno/webframework/templates"
+	"github.com/scigno/webframework/auth"
+	"github.com/scigno/webframework/templates"
 )
 
 type data struct {

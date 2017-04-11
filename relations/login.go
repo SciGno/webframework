@@ -5,8 +5,8 @@ package relations
 import (
 	"net/http"
 
-	"bitbucket.com/scigno/webframework/logger"
-	"bitbucket.com/scigno/webframework/templates"
+	"github.com/scigno/webframework/logger"
+	"github.com/scigno/webframework/templates"
 )
 
 type login struct {

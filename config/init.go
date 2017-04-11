@@ -6,12 +6,12 @@ import (
 	"io"
 	"net/http"
 
-	"bitbucket.com/scigno/webframework/db"
-	"bitbucket.com/scigno/webframework/logger"
-	"bitbucket.com/scigno/webframework/relations"
-	"bitbucket.com/scigno/webframework/router"
-	"bitbucket.com/scigno/webframework/session"
-	"bitbucket.com/scigno/webframework/uuid4"
+	"github.com/scigno/webframework/db"
+	"github.com/scigno/webframework/logger"
+	"github.com/scigno/webframework/relations"
+	"github.com/scigno/webframework/router"
+	"github.com/scigno/webframework/session"
+	"github.com/scigno/webframework/uuid4"
 )
 
 // Routes this is the routes hash
