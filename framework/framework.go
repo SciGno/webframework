@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"tutorials/webframework/logger"
+
+	"github.com/scigno/webframework/logger"
 )
 
 // Framework struct
