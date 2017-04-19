@@ -4,8 +4,8 @@ package main
 import (
 	"net/http"
 
-	"bitbucket.com/scignox/auth/relations"
 	"github.com/SciGno/webframework/framework"
+	"github.com/scigno/webframework/examples/semantic_ui/relations"
 	"github.com/scigno/webframework/logger"
 )
 

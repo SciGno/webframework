@@ -23,7 +23,7 @@
         <h1 class="ui header">
             {{if . }} <!-- Check if we have any data for the template -->
               {{.Data.local}}
-              {{.Data.User.FirstName}} {{.Data.Auth.IsMemberOf 1 "r"}}
+              {{.Data.User}} {{.Data.Auth}}
             {{end}}
         </h1>
         <h2>Do whatever you want when you want to.</h2>

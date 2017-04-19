@@ -5,7 +5,6 @@ package relations
 import (
 	"net/http"
 
-	"github.com/scigno/webframework/auth"
 	"github.com/scigno/webframework/templates"
 )
 
@@ -21,9 +20,8 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("method:", r.Method) // get request method
 
 	local.Data["local"] = "Welcome Message"
-	local.Data["number"] = 1
-	local.Data["User"] = auth.User()
-	local.Data["Auth"] = auth.Auth()
+	local.Data["User"] = "Someone"
+	local.Data["Auth"] = "Authorized"
 
 	templates.Parse("index", local)
 	templates.ExecuteTemplate("index", w)
