@@ -42,5 +42,4 @@ func ExecuteTemplate(tpl string, w http.ResponseWriter) {
 	if err != nil {
 		log.Fatalf("template execution: %s", err)
 	}
-
 }

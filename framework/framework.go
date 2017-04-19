@@ -23,8 +23,8 @@ func New() Framework {
 	return f
 }
 
-// CreateServer function
-func (f *Framework) CreateServer(server string) error {
+// NewServer function
+func (f *Framework) NewServer(server string) error {
 	f.mux[server] = http.NewServeMux()
 	return nil
 }
