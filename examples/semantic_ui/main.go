@@ -6,7 +6,6 @@ import (
 
 	"github.com/SciGno/webframework/framework"
 	"github.com/scigno/webframework/examples/semantic_ui/relations"
-	"github.com/scigno/webframework/logger"
 )
 
 // This is the main function
@@ -15,14 +14,11 @@ func main() {
 	// config.Init()
 
 	wf := framework.New()
-	wf.NewServer("server1")
+	wf.NewServer("server1", ":8080")
 
 	fs := http.FileServer(http.Dir("static"))
 	wf.Handle("server1", "/static/", http.StripPrefix("/static/", fs))
 	wf.HandleFunc("server1", "/", relations.Index)
-
-	logger.Info(wf.Servers())
-	logger.Info(wf.Routes())
 
 	wf.Start("server1")
 
