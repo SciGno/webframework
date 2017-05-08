@@ -58,6 +58,18 @@ func (f *Framework) HandleFunc(server string, pattern string, handler func(w htt
 	})
 }
 
+// HandleGETFunc Method
+func (f *Framework) HandleGETFunc(server string, pattern string, handler func(w http.ResponseWriter, r *http.Request)) {
+	f.servers[server].mux.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			requestLogger(r)
+			handler(w, r)
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+		}
+	})
+}
+
 // Start Method
 func (f *Framework) Start(server string) {
 	err := http.ListenAndServe(f.servers[server].addr, f.servers[server].mux)
@@ -68,6 +80,12 @@ func (f *Framework) Start(server string) {
 
 // requestLogger function
 func requestLogger(r *http.Request) {
-	logger.Info("UserAgent: %s", r.UserAgent())
-	logger.Info("RequestURI: %s", r.RequestURI)
+	logger.Info("| %s | %s | %s ", r.Method, r.RemoteAddr, r.RequestURI)
+}
+
+func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
+	w.WriteHeader(status)
+	if status == http.StatusNotFound {
+		fmt.Fprint(w, "custom 404")
+	}
 }
