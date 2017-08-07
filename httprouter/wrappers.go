@@ -2,60 +2,12 @@ package httprouter
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"os"
 	"regexp"
-	"strconv"
-	"time"
-
-	"github.com/scigno/webframework/logger"
 )
 
 var hostname, _ = os.Hostname()
-
-// Entity struct
-type Entity struct {
-	entity string
-}
-
-// Event struct
-type Event struct {
-	entity string
-}
-
-// Identity struct
-type Identity struct {
-	entity string
-}
-
-// From struct
-type From struct {
-	entity string
-}
-
-// To struct
-type To struct {
-	entity string
-}
-
-// Relation struct
-type Relation struct {
-	event Event
-}
-
-// Subject struct
-type Subject struct {
-	identity Identity
-}
-
-// RED struct
-type RED struct {
-	from     From
-	to       To
-	relation Relation
-	subject  Subject
-}
 
 type regexFuncWrapper struct {
 	handler      func(w http.ResponseWriter, r *http.Request)
@@ -64,34 +16,8 @@ type regexFuncWrapper struct {
 	customWriter CustomWriter
 }
 
-func createREDMsg(from string, to string, event string, subject string, smap interface{}) interface{} {
-	return map[string]interface{}{
-		"meta": map[string]interface{}{
-			"version": "1.0",
-			"time":    time.Now(),
-		},
-		"from": map[string]interface{}{
-			"entity": from,
-		},
-		"to": map[string]interface{}{
-			"entity": to,
-		},
-		"relation": map[string]interface{}{
-			"event": event,
-		},
-		"subject": map[string]interface{}{
-			"identity":   "httpd",
-			"properties": smap,
-		},
-	}
-}
-
 func (f regexFuncWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	// reqLog, _ := json.MarshalIndent(req, "", "  ")
-	reqLog, _ := json.Marshal(createREDMsg(r.Host, hostname, "request", "httpd", map[string]interface{}{"method": r.Method, "url": r.RequestURI}))
-	logger.Info("%s", string(reqLog))
-
+	// logger.Info("| serving | %s | %s | %s", r.Method, r.RemoteAddr, r.RequestURI)
 	ctx := r.Context()
 	path := r.URL.Path
 	values := f.paramsFilter.Split(path, -1)
@@ -111,10 +37,7 @@ func (f regexFuncWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	f.customWriter.ResponseWriter = w
 	f.handler(&f.customWriter, r.WithContext(ctx))
-	statusCode := f.customWriter.statusCode
-	respLog, _ := json.Marshal(createREDMsg(hostname, r.Host, "response", "httpd", map[string]interface{}{"method": r.Method, "url": r.RequestURI, "status": strconv.Itoa(statusCode)}))
-	logger.Info("%s", string(respLog))
-
+	// statusCode := f.customWriter.statusCode
 	// logger.Info("| completed | %s | %s | %s | Status: %d", r.Method, r.RemoteAddr, r.RequestURI, statusCode)
 }
 
@@ -128,7 +51,7 @@ type regexHandlerWrapper struct {
 }
 
 func (h regexHandlerWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	logger.Info("| serving | %s | %s | %s", r.Method, r.RemoteAddr, r.RequestURI)
+	// logger.Info("| serving | %s | %s | %s", r.Method, r.RemoteAddr, r.RequestURI)
 	path := r.URL.Path
 	params := h.paramsFilter.Split(path, -1)
 	for i, v := range params {
@@ -138,8 +61,8 @@ func (h regexHandlerWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	h.customWriter.ResponseWriter = w
 	h.handler.ServeHTTP(&h.customWriter, r)
-	statusCode := h.customWriter.statusCode
-	logger.Info("| completed | %s | %s | %s | Status: %d", r.Method, r.RemoteAddr, r.RequestURI, statusCode)
+	// statusCode := h.customWriter.statusCode
+	// logger.Info("| completed | %s | %s | %s | Status: %d", r.Method, r.RemoteAddr, r.RequestURI, statusCode)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,11 +73,11 @@ type handlerWrapper struct {
 }
 
 func (h handlerWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	logger.Info("| serving | %s | %s | %s", r.Method, r.RemoteAddr, r.RequestURI)
+	// logger.Info("| serving | %s | %s | %s", r.Method, r.RemoteAddr, r.RequestURI)
 	h.customWriter.ResponseWriter = w
 	h.handler.ServeHTTP(&h.customWriter, r)
-	statusCode := h.customWriter.statusCode
-	logger.Info("| completed | %s | %s | %s | Status: %d", r.Method, r.RemoteAddr, r.RequestURI, statusCode)
+	// statusCode := h.customWriter.statusCode
+	// logger.Info("| completed | %s | %s | %s | Status: %d", r.Method, r.RemoteAddr, r.RequestURI, statusCode)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,11 +88,11 @@ type funcWrapper struct {
 }
 
 func (f funcWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	logger.Info("| serving | %s | %s | %s", r.Method, r.RemoteAddr, r.RequestURI)
+	// logger.Info("| serving | %s | %s | %s", r.Method, r.RemoteAddr, r.RequestURI)
 	f.customWriter.ResponseWriter = w
 	f.handler(&f.customWriter, r)
-	statusCode := f.customWriter.statusCode
-	logger.Info("| completed | %s | %s | %s | Status: %d", r.Method, r.RemoteAddr, r.RequestURI, statusCode)
+	// statusCode := f.customWriter.statusCode
+	// logger.Info("| completed | %s | %s | %s | Status: %d", r.Method, r.RemoteAddr, r.RequestURI, statusCode)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
