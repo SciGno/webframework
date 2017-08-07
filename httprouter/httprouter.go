@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
-
-	"github.com/scigno/webframework/logger"
 )
 
 var buildRegEx, _ = regexp.Compile("{(.*?)}")
@@ -48,15 +46,14 @@ func (rtr Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path = path[1:] // Removing the / at the bigining of path
 
 	if simpleHandler, ok := rtr.simplePath[path]; ok {
-		logger.Info("[ServeHTTP] Simple path...")
+		// logger.Info("[ServeHTTP] Simple path...")
 		(simpleHandler[r.Method]).ServeHTTP(w, r)
 	} else {
-		logger.Info("[ServeHTTP] Regexp path...")
+		// logger.Info("[ServeHTTP] Regexp path...")
 		for k, v := range rtr.regexPath {
 			matchRegexp, _ := regexp.Compile("^" + k + "$")
 			lenRegexp := strings.Count(k, "/")
 			lenPath := strings.Count(path, "/")
-			// logger.Info("Lengths: %v %v", lenRegexp, lenPath)
 			// Check if path matches pattern and compare the lengths to guarantee
 			// the path priority based on length
 			if matchRegexp.Match([]byte(path)) && lenRegexp == lenPath {
@@ -100,7 +97,6 @@ func (rtr *Router) processFuncHandler(p string, method string, h func(w http.Res
 }
 
 func (rtr *Router) processHandler(p string, method string, h http.Handler) {
-	logger.Info("[processHandler]")
 	p = rtr.validatePath(p)
 	if buildRegEx.Match([]byte(p)) { // Path has named parameters
 		// logger.Info("[processHandler] Regexp path: %v", p)
@@ -113,24 +109,14 @@ func (rtr *Router) processHandler(p string, method string, h http.Handler) {
 			m[method] = rtr.wrapRegexpHandler(paramsArr, filterRegexp, h)
 			rtr.regexPath[regexPattern] = m
 		}
-		// m := make(map[string]http.Handler)
-		// m[method] = rtr.wrapRegexpHandler(paramsArr, filterRegexp, h)
-		// rtr.regexPath[regexPattern] = m
 	} else { // Path is normal
-		logger.Info("[processHandler] Normal path: %v", p)
 		if rm, ok := rtr.simplePath[p]; ok { // Path in map
 			rm[method] = rtr.wrapHandler(h)
 		} else { // Path not in map
-			logger.Info("[processHandler] Path: %v, Method: %v", p, method)
 			m := make(map[string]http.Handler)
 			m[method] = rtr.wrapHandler(h)
 			rtr.simplePath[p] = m
-			logger.Info("[processHandler] Map: %+v", rtr.simplePath[p])
 		}
-
-		// m := make(map[string]http.Handler)
-		// m[method] = rtr.wrapHandler(h)
-		// rtr.simplePath[p] = m
 	}
 }
 
@@ -169,7 +155,6 @@ func (rtr Router) wrapRegexpHandler(parameters []string, filter *regexp.Regexp, 
 
 // handlerWrapper function
 func (rtr Router) wrapHandler(h http.Handler) http.Handler {
-	logger.Info("[wrapHandler]")
 	return handlerWrapper{
 		handler:      h,
 		customWriter: NewCustomWriter(nil),

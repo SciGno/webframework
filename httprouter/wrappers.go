@@ -112,8 +112,6 @@ func (f regexFuncWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	f.customWriter.ResponseWriter = w
 	f.handler(&f.customWriter, r.WithContext(ctx))
 	statusCode := f.customWriter.statusCode
-
-	// respLog, _ := json.MarshalIndent(resp, "", "  ")
 	respLog, _ := json.Marshal(createREDMsg(hostname, r.Host, "response", "httpd", map[string]interface{}{"method": r.Method, "url": r.RequestURI, "status": strconv.Itoa(statusCode)}))
 	logger.Info("%s", string(respLog))
 
@@ -138,12 +136,9 @@ func (h regexHandlerWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			params = append(params[:i], params[i+1:]...)
 		}
 	}
-
 	h.customWriter.ResponseWriter = w
 	h.handler.ServeHTTP(&h.customWriter, r)
 	statusCode := h.customWriter.statusCode
-
-	// h.handler.ServeHTTP(w, r)
 	logger.Info("| completed | %s | %s | %s | Status: %d", r.Method, r.RemoteAddr, r.RequestURI, statusCode)
 }
 
@@ -159,7 +154,6 @@ func (h handlerWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.customWriter.ResponseWriter = w
 	h.handler.ServeHTTP(&h.customWriter, r)
 	statusCode := h.customWriter.statusCode
-	// h.handler.ServeHTTP(w, r)
 	logger.Info("| completed | %s | %s | %s | Status: %d", r.Method, r.RemoteAddr, r.RequestURI, statusCode)
 }
 
@@ -171,13 +165,11 @@ type funcWrapper struct {
 }
 
 func (f funcWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// logger.Error("| serving | %s | %s | %s ", r.Method, r.RemoteAddr, r.RequestURI)
-	// f.customWriter.ResponseWriter = w
-	// f.handler(&f.customWriter, r)
-	// statusCode := f.customWriter.statusCode
-	f.handler(w, r)
-	logger.Info("| COMPLETED | %s | %s | %s", r.Method, r.RemoteAddr, r.RequestURI)
-	// logger.Info("| funcWrapper [%v]|", statusCode)
+	logger.Info("| serving | %s | %s | %s", r.Method, r.RemoteAddr, r.RequestURI)
+	f.customWriter.ResponseWriter = w
+	f.handler(&f.customWriter, r)
+	statusCode := f.customWriter.statusCode
+	logger.Info("| completed | %s | %s | %s | Status: %d", r.Method, r.RemoteAddr, r.RequestURI, statusCode)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
