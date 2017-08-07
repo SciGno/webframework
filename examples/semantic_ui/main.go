@@ -2,24 +2,21 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
-	"github.com/SciGno/webframework/framework"
+	"github.com/SciGno/webframework/httprouter"
 	"github.com/scigno/webframework/examples/semantic_ui/relations"
 )
 
 // This is the main function
 func main() {
 
-	// config.Init()
+	s := httprouter.New()
+	fs := http.FileServer(http.Dir("/static/"))
+	s.HandleStatic("/static/", http.StripPrefix("/static/", fs))
+	s.HandleFuncGET("/", relations.Index)
 
-	wf := framework.New()
-	wf.NewServer("server1", ":8080")
-
-	fs := http.FileServer(http.Dir("static"))
-	wf.Handle("server1", "/static/", http.StripPrefix("/static/", fs))
-	wf.HandleFunc("server1", "/", relations.Index)
-
-	wf.Start("server1")
+	log.Fatal(http.ListenAndServe(":8080", s))
 
 }

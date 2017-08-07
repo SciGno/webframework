@@ -6,7 +6,19 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/scigno/webframework/auth"
 	"github.com/scigno/webframework/logger"
+)
+
+const (
+	// HTTPPost for POST handler
+	HTTPPost = "POST"
+	// HTTPGet for GET handler
+	HTTPGet = "GET"
+	// HTTPPut for PUT handler
+	HTTPPut = "PUT"
+	// HTTPDelete for DELETE handler
+	HTTPDelete = "DELETE"
 )
 
 // Framework struct
@@ -42,31 +54,23 @@ func (f *Framework) Servers() string {
 	return fmt.Sprintf(buffer.String())
 }
 
+// SetAuthProvider Method
+func (f *Framework) SetAuthProvider(provider auth.Provider) {
+}
+
 // Handle Method
 func (f *Framework) Handle(server string, pattern string, handler http.Handler) {
 	f.servers[server].mux.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-		requestLogger(r)
 		handler.ServeHTTP(w, r)
+		requestLogger(w, r)
 	})
 }
 
 // HandleFunc Method
 func (f *Framework) HandleFunc(server string, pattern string, handler func(w http.ResponseWriter, r *http.Request)) {
 	f.servers[server].mux.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-		requestLogger(r)
 		handler(w, r)
-	})
-}
-
-// HandleGETFunc Method
-func (f *Framework) HandleGETFunc(server string, pattern string, handler func(w http.ResponseWriter, r *http.Request)) {
-	f.servers[server].mux.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "GET" {
-			requestLogger(r)
-			handler(w, r)
-		} else {
-			w.WriteHeader(http.StatusNotFound)
-		}
+		requestLogger(w, r)
 	})
 }
 
@@ -79,8 +83,15 @@ func (f *Framework) Start(server string) {
 }
 
 // requestLogger function
-func requestLogger(r *http.Request) {
-	logger.Info("| %s | %s | %s ", r.Method, r.RemoteAddr, r.RequestURI)
+func requestLogger(w http.ResponseWriter, r *http.Request) {
+	// w.WriteHeader(http.StatusOK)
+	logger.Info("| %s | %s | %s | Status: %v", r.Method, r.RemoteAddr, r.RequestURI, http.StatusOK)
+}
+
+// requestLogger function
+func requestErrorLogger(w http.ResponseWriter, r *http.Request) {
+	// w.WriteHeader(http.StatusInternalServerError)
+	logger.Error("| %s | %s | %s | Status: %v", r.Method, r.RemoteAddr, r.RequestURI, http.StatusOK)
 }
 
 func errorHandler(w http.ResponseWriter, r *http.Request, status int) {

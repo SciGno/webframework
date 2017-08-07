@@ -1,13 +1,27 @@
 package auth
 
-// var Auth = auth{}
+// import "github.com/dgrijalva/jwt-go"
 
 type auth struct{}
 
-// UserIdentity
-type userIdentity struct {
-	FirstName string
-	LastName  string
+// Auth variable
+var Auth = auth{}
+
+// Provider interface
+type Provider interface {
+	ValidateCredentials(user string, password string) bool
+}
+
+// JWTProvider interface
+type JWTProvider interface {
+	ValidateJWT(jwt interface{})
+	CreateJWTToken() interface{}
+}
+
+// RBAC interface
+type RBAC interface {
+	AddGroup(group string) bool
+	AddToGroup(users []string)
 }
 
 func (a *auth) IsMemberOf(userid int, group string) bool {
@@ -15,15 +29,4 @@ func (a *auth) IsMemberOf(userid int, group string) bool {
 		return true
 	}
 	return false
-}
-
-// Auth function
-func Auth() *auth {
-	return &auth{}
-}
-
-// User function
-func User() *userIdentity {
-	user := userIdentity{"Leandro", "Lopez"}
-	return &user
 }

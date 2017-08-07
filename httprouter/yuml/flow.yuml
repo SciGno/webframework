@@ -1,0 +1,13 @@
+// {type:class}
+// {direction:topDown}
+[Main]<->[Create Router| +New()]
+[Main]<>->[Add Handlers|+HandleFuncGet()|+HandleGet()]
+[Add Handlers]<>->[Process Handler|+processFuncHandler()|+processHandler()]
+[Process Handler]<>->[Wrap Func Handlers]
+[Wrap Func Handlers]<>->[Get RegExp|+getRegExpData()]
+[Get RegExp]<>->[+wrapRegexpFunction()]
+[Wrap Func Handlers]<>->[Wrap Function|+wrapFunciton()]
+[Process Handler]<>->[Wrap Handlers]
+[Wrap Handlers]<>->[Get RegExp|+getRegExpData()]
+[Get RegExp|+getRegExpData()]<>->[+wrapRegexpHandler()]
+[Wrap Handlers]<>->[Wrap Handler|wrapHandler()]

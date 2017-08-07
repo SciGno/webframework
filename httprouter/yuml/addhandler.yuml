@@ -1,0 +1,7 @@
+// {type:activity}
+// {generate:true}
+(start)->|q|->(func)-><f>[ simple path ]->(func wrapper)->(simple map)->(end)
+<f>[ regex path ]->(regex func wrapper)->(regex map)->(end)
+|q|->(handler)-><h>[ simple path ]->(handler wrapper)->(simple map)
+<h>[ regex path ]->(regex handler wrapper)->(regex map)
+
