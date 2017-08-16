@@ -26,12 +26,16 @@ func (f regexFuncWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Remove empty elements from array
 	arr := []string{}
 	for _, v := range values {
-		if v != "" {
+		if v != "" && v != "/" {
 			arr = append(arr, v)
 		}
 	}
+
+	// logger.Info("Array: %v", arr)
+	// logger.Info("Len: %v", len(arr))
 	// Add key=values to context
 	for i, v := range arr {
+		// logger.Info("Index: %v", i)
 		ctx = context.WithValue(ctx, contextKey(f.params[i]), v)
 	}
 

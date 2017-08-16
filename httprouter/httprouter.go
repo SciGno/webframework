@@ -36,6 +36,10 @@ func (rtr Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	path := r.URL.Path
 
+	if path[len(path)-1:] == "/" {
+		path = path[:len(path)-1]
+	}
+
 	if rtr.staticPath != "" && strings.Contains(path, rtr.staticPath) {
 		// logger.Info("Path: %v, Static: %v, Contains: %v", path, rtr.staticPath, strings.Contains(path, rtr.staticPath))
 		rtr.static.ServeHTTP(w, r)
@@ -47,18 +51,28 @@ func (rtr Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if simpleHandler, ok := rtr.simplePath[path]; ok {
 		// logger.Info("[ServeHTTP] Simple path...")
-		(simpleHandler[r.Method]).ServeHTTP(w, r)
+		handler, ok := simpleHandler[r.Method]
+		if ok {
+			handler.ServeHTTP(w, r)
+		} else {
+			http.NotFound(w, r)
+		}
 	} else {
 		// logger.Info("[ServeHTTP] Regexp path...")
 		for k, v := range rtr.regexPath {
+			// logger.Info("[ServeHTTP] all: %v, %v", k, path)
+			// logger.Info("[ServeHTTP] Regexp: %v", regexp)
 			matchRegexp, _ := regexp.Compile("^" + k + "$")
 			lenRegexp := strings.Count(k, "/")
 			lenPath := strings.Count(path, "/")
+
+			// logger.Info("[ServeHTTP] Length: %v, %v", lenRegexp, lenPath)
 			// Check if path matches pattern and compare the lengths to guarantee
 			// the path priority based on length
 			if matchRegexp.Match([]byte(path)) && lenRegexp == lenPath {
 				handler, ok := v[r.Method]
 				if ok {
+					// logger.Info("[ServeHTTP] Regexp path: %v", path)
 					handler.ServeHTTP(w, r)
 				} else {
 					http.NotFound(w, r)
@@ -76,6 +90,11 @@ func (rtr Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (rtr *Router) processFuncHandler(p string, method string, h func(w http.ResponseWriter, r *http.Request)) {
 	p = rtr.validatePath(p)
+
+	if p[len(p)-1:] == "/" {
+		p = p[:len(p)-1]
+	}
+
 	if buildRegEx.Match([]byte(p)) { // Path has named parameters
 		paramsArr, regexPattern, filterRegexp := rtr.getRegExpData(p)
 		if rm, ok := rtr.regexPath[regexPattern]; ok { // Path in map
@@ -98,6 +117,11 @@ func (rtr *Router) processFuncHandler(p string, method string, h func(w http.Res
 
 func (rtr *Router) processHandler(p string, method string, h http.Handler) {
 	p = rtr.validatePath(p)
+
+	if p[len(p)-1:] == "/" {
+		p = p[:len(p)-1]
+	}
+
 	if buildRegEx.Match([]byte(p)) { // Path has named parameters
 		// logger.Info("[processHandler] Regexp path: %v", p)
 		paramsArr, regexPattern, filterRegexp := rtr.getRegExpData(p)
