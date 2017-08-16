@@ -36,9 +36,14 @@ func (rtr Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	path := r.URL.Path
 
+	// logger.Info("Path: %v", path)
+
 	if path[len(path)-1:] == "/" {
 		path = path[:len(path)-1]
 	}
+
+	// logger.Info("New Path: %v", path)
+	// logger.Info("staticPath: %v", rtr.staticPath)
 
 	if rtr.staticPath != "" && strings.Contains(path, rtr.staticPath) {
 		// logger.Info("Path: %v, Static: %v, Contains: %v", path, rtr.staticPath, strings.Contains(path, rtr.staticPath))
@@ -46,8 +51,10 @@ func (rtr Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// r.URL.Path = r.URL.Path[1:]
-	path = path[1:] // Removing the / at the bigining of path
+	// Removing the / at the bigining of path
+	if len(path) > 0 {
+		path = path[1:]
+	}
 
 	if simpleHandler, ok := rtr.simplePath[path]; ok {
 		// logger.Info("[ServeHTTP] Simple path...")
@@ -193,6 +200,11 @@ func (rtr *Router) validatePath(p string) string {
 	if p[0] != '/' {
 		panic("path must begin with '/' --> " + p)
 	}
+
+	if len(p) == 1 {
+		return p
+	}
+
 	return p[1:]
 }
 
