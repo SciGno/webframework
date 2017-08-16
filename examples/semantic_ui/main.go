@@ -13,8 +13,8 @@ import (
 func main() {
 
 	s := httprouter.New()
-	fs := http.FileServer(http.Dir("/static/"))
-	s.HandleStatic("/static/", http.StripPrefix("/static/", fs))
+	fs := http.FileServer(http.Dir("static"))
+	s.HandleStatic("/static", http.StripPrefix("/static", fs))
 	s.HandleFuncGET("/", relations.Index)
 
 	log.Fatal(http.ListenAndServe(":8080", s))
