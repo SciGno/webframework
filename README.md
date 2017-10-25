@@ -15,7 +15,7 @@ To test JWT authenticate with the information below.
 - Username is: user@domain.com
 - Password is: password
 
-Once you login, you will be redirected to the main page. 
+Once you login, you will be redirected to the main page. The JWT token will expire in 30 seconds. Refreshing the page after token expiration will redirect you to the login page.
 
 TODO
 ===
