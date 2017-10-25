@@ -13,7 +13,7 @@ type regexFuncWrapper struct {
 	handler      func(w http.ResponseWriter, r *http.Request)
 	params       []string
 	paramsFilter *regexp.Regexp
-	customWriter CustomWriter
+	customWriter CustomResponseWriter
 }
 
 func (f regexFuncWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +36,7 @@ func (f regexFuncWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Add key=values to context
 	for i, v := range arr {
 		// logger.Info("Index: %v", i)
-		ctx = context.WithValue(ctx, contextKey(f.params[i]), v)
+		ctx = context.WithValue(ctx, ContextKey(f.params[i]), v)
 	}
 
 	f.customWriter.ResponseWriter = w
@@ -51,7 +51,7 @@ type regexHandlerWrapper struct {
 	handler      http.Handler
 	params       []string
 	paramsFilter *regexp.Regexp
-	customWriter CustomWriter
+	customWriter CustomResponseWriter
 }
 
 func (h regexHandlerWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -73,7 +73,7 @@ func (h regexHandlerWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 type handlerWrapper struct {
 	handler      http.Handler
-	customWriter CustomWriter
+	customWriter CustomResponseWriter
 }
 
 func (h handlerWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -88,7 +88,7 @@ func (h handlerWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 type funcWrapper struct {
 	handler      func(w http.ResponseWriter, r *http.Request)
-	customWriter CustomWriter
+	customWriter CustomResponseWriter
 }
 
 func (f funcWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -101,19 +101,42 @@ func (f funcWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-// CustomWriter struc
-type CustomWriter struct {
+// CustomResponseWriter struc
+type CustomResponseWriter struct {
 	http.ResponseWriter
 	statusCode int
 }
 
 // NewCustomWriter function
-func NewCustomWriter(w http.ResponseWriter) CustomWriter {
-	return CustomWriter{w, http.StatusOK}
+func NewCustomWriter(w http.ResponseWriter) CustomResponseWriter {
+	return CustomResponseWriter{w, http.StatusOK}
+}
+
+// Header method
+func (c *CustomResponseWriter) Header() http.Header {
+	return c.ResponseWriter.Header()
 }
 
 // WriteHeader method
-func (c *CustomWriter) WriteHeader(status int) {
+func (c *CustomResponseWriter) WriteHeader(status int) {
 	c.statusCode = status
 	c.ResponseWriter.WriteHeader(c.statusCode)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
+// SimpleFuncWrapper struc for function to handler wrapping
+type SimpleFuncWrapper struct {
+	handler func(w http.ResponseWriter, r *http.Request)
+}
+
+func (f SimpleFuncWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	f.handler(w, r)
+}
+
+// Func2Handler wrapper
+func Func2Handler(f func(w http.ResponseWriter, r *http.Request)) http.Handler {
+	return SimpleFuncWrapper{
+		f,
+	}
 }

@@ -41,6 +41,15 @@ func (rtr *Router) HandleDELETE(p string, h http.Handler) *Router {
 	return rtr
 }
 
+// Handle function
+func (rtr *Router) Handle(p string, h http.Handler) *Router {
+	rtr.processHandler(p, http.MethodGet, h)
+	rtr.processHandler(p, http.MethodPost, h)
+	rtr.processHandler(p, http.MethodPut, h)
+	rtr.processHandler(p, http.MethodDelete, h)
+	return rtr
+}
+
 ////////////////////////////
 // Function handler section
 ////////////////////////////

@@ -14,7 +14,7 @@
           <a class="item">Company</a>
           <a class="item">Careers</a>
             <div class="right item">
-              <a class="ui primary button">Sign In</a>
+              <a class="ui primary button" href="/login">Sign In</a>
             </div>
         </div>
       </div>
@@ -22,8 +22,8 @@
       <div class="ui text container">
         <h1 class="ui header">
             {{if . }} <!-- Check if we have any data for the template -->
-              {{.Data.local}}
-              {{.Data.User}} {{.Data.Auth}}
+            {{.Data.Data.Message}}
+            {{.Data.Data.User}} {{.Data.Data.Auth}}
             {{end}}
         </h1>
         <h2>Do whatever you want when you want to.</h2>
