@@ -8,7 +8,8 @@ import (
 
 var buildRegEx, _ = regexp.Compile("{(.*?)}")
 
-type contextKey string
+// ContextKey type
+type ContextKey string
 
 // Router struct
 type Router struct {
@@ -242,5 +243,5 @@ func (rtr *Router) getRegExpData(p string) ([]string, string, *regexp.Regexp) {
 // Vars returns a mapped value from the request
 func Vars(v string, r *http.Request) interface{} {
 	ctx := r.Context()
-	return ctx.Value(contextKey(v))
+	return ctx.Value(ContextKey(v))
 }

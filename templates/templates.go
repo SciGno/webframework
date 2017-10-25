@@ -7,38 +7,47 @@ import (
 	"strings"
 )
 
-var templates = make(map[string]interface{})
+// var templates = make(map[string]interface{})
 
-// Parse function
-func Parse(tpl string, data interface{}) {
-	templates[tpl] = data
+// TemplateContext type
+type TemplateContext string
+
+// TemplateData struct
+type TemplateData struct {
+	Code int
+	Data interface{}
 }
 
-// RenderTemplate function
-func RenderTemplate(tpl string, data interface{}, w http.ResponseWriter) {
-	pattern := strings.Join([]string{"entities", tpl, "*.html"}, "/")
-	t := template.Must(template.ParseGlob(pattern))
-	pattern = strings.Join([]string{"entities", "common", "*.html"}, "/")
-	t = template.Must(t.ParseGlob(pattern))
-
-	err := t.Execute(w, data)
-	if err != nil {
-		log.Fatalf("====== Template Error =====")
-		log.Fatalf("Template execution: %s", err)
-	}
-}
+// Init function
+// func Init(tpl string, data interface{}) {
+// 	templates[tpl] = data
+// }
 
 // ExecuteTemplate function
-func ExecuteTemplate(tpl string, w http.ResponseWriter) {
+func ExecuteTemplate(data interface{}, tpl string, w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	local := TemplateData{
+		Data: data,
+	}
+	// data := templates[tpl]
 
-	data := templates[tpl]
+	// TODO: Get other template data from context
 
 	pattern := strings.Join([]string{"entities", tpl, "*.html"}, "/")
 	t := template.Must(template.ParseGlob(pattern))
 	pattern = strings.Join([]string{"entities", "common", "*.html"}, "/")
 	t = template.Must(t.ParseGlob(pattern))
 
-	err := t.Execute(w, data)
+	// Get the status message if available
+	code := ctx.Value(TemplateContext("http_status"))
+
+	if code != nil {
+		local.Code = code.(int)
+	} else {
+		local.Code = 200
+	}
+
+	err := t.Execute(w, local)
 	if err != nil {
 		log.Fatalf("template execution: %s", err)
 	}
