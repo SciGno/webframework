@@ -12,8 +12,8 @@ Then open your browser to:  http://localhost:8888/login
 This is just an exmaple login page.  See the source code for inplementation.
 
 To test JWT authenticate with the information below.
-Username is: user@domain.com
-Password is: password
+- Username is: user@domain.com
+- Password is: password
 
 Once you login, you will be redirected to the main page. 
 
