@@ -71,7 +71,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 			// w.Header().Set("Authorization", "Bearer "+token)
 			// w.Header().Set("WWW-Authenticate", "Basic realm=\"user\"")
-			http.Redirect(w, r, "/settings", http.StatusFound)
+			http.Redirect(w, r, "/index", http.StatusFound)
 			return
 		}
 		w.WriteHeader(http.StatusUnauthorized)

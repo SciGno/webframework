@@ -5,14 +5,15 @@ package relations
 import (
 	"net/http"
 
+	"github.com/scigno/webframework/auth"
 	"github.com/scigno/webframework/templates"
 )
 
-type data struct {
-	Data map[string]interface{}
+type indexData struct {
+	Code  int
+	Error int
+	Data  map[string]interface{}
 }
-
-var local = data{make(map[string]interface{})}
 
 // Index handler.
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -24,10 +25,18 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 	// fmt.Println("method:", r.Method) // get request method
 
-	local.Data["Message"] = "Welcome Message"
-	local.Data["User"] = "Someone"
-	local.Data["Auth"] = "Authorized"
+	d := indexData{}
+	d.Data = make(map[string]interface{})
+	d.Code = 200
+
+	if !auth.JWTContextValue(auth.JWTTokenValid, r).(bool) {
+		http.Redirect(w, r, "/login", http.StatusFound)
+	}
+
+	d.Data["Message"] = "Welcome Message"
+	d.Data["User"] = "Someone"
+	d.Data["Auth"] = "Authorized"
 
 	// templates.Init("index", local)
-	templates.ExecuteTemplate(local, "index", w, r)
+	templates.ExecuteTemplate(d, "index", w, r)
 }

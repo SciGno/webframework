@@ -48,7 +48,7 @@ func main() {
 	s.HandleFuncPOST("/v1/jwt/verifykeys", auth.JWTVerifyKeys)
 
 	// create a protectd handler with a redirect string
-	s.Handle("/settings", auth.JWTProtectedFunc(relations.Index, "access_token"))
+	s.Handle("/index", auth.JWTProtectedFunc(relations.Index, "access_token"))
 	s.Handle("/login", auth.JWTProtectedFunc(relations.Login, "access_token"))
 	s.Handle("/register", auth.JWTProtectedFunc(relations.Register, "access_token"))
 	s.Handle("/registered", auth.JWTProtectedFunc(relations.Registered, "access_token"))
