@@ -7,7 +7,7 @@ cd exmaples/semantic_ui
 go run main.go
 ```
 
-Then open your browser to:  http://localhost:8080/
+Then open your browser to:  http://localhost:8888/
 
 TODO
 ===
