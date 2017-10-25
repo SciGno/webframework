@@ -51,7 +51,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		email, eok := r.PostForm["email"]
 		pass, pok := r.PostForm["password"]
 
-		if eok && pok && email[0] == "leandro.lopez@gmail.com" && pass[0] == "password" {
+		if eok && pok && email[0] == "user@domain.com" && pass[0] == "password" {
 			m := map[string]interface{}{
 				"admin":  true,
 				"groups": []string{"developer", "operations"},
@@ -64,7 +64,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 				Name:     "access_token",
 				Value:    token,
 				Path:     "/",
-				Expires:  time.Now().Add(10 * time.Second),
+				Expires:  time.Now().Add(30 * time.Second),
 				HttpOnly: true,
 				// Secure:   true,
 			})

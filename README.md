@@ -11,5 +11,4 @@ Then open your browser to:  http://localhost:8080/
 
 TODO
 ===
-1. Add HTTPS support
-2. Add log to local files and syslog support
+1. Add log to local files and syslog support
