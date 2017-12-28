@@ -42,16 +42,14 @@ func main() {
 	s.HandleStatic("/static", http.StripPrefix("/static", fs))
 	// s.HandleFuncGET("/", relations.Index)
 
-	// Used to add signin keys to the framework
-	s.HandleFuncPOST("/v1/jwt/signingkeys", auth.JWTSignInKeys)
-	// Used to add verification keys to the framework
-	s.HandleFuncPOST("/v1/jwt/verifykeys", auth.JWTVerifyKeys)
+	// Used to add RSA keys to the framework
+	s.HandleFuncPOST("/v1/jwt/keys", auth.JWTKeys)
 
 	// create a protectd handler with a redirect string
-	s.Handle("/index", auth.JWTProtectedFunc(relations.Index, "access_token"))
-	s.Handle("/login", auth.JWTProtectedFunc(relations.Login, "access_token"))
-	s.Handle("/register", auth.JWTProtectedFunc(relations.Register, "access_token"))
-	s.Handle("/registered", auth.JWTProtectedFunc(relations.Registered, "access_token"))
+	s.Handle("/index", auth.JWTProtectedHandler(relations.Index))
+	s.Handle("/login", auth.JWTProtectedHandler(relations.Login))
+	s.Handle("/register", auth.JWTProtectedHandler(relations.Register))
+	s.Handle("/registered", auth.JWTProtectedHandler(relations.Registered))
 
 	// s.HandleFuncGET("/", relations.Index)
 	// s.HandlePOST("/v1/jwt/form/login",
